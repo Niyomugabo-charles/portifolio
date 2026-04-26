@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Charles Niyomugabo · Full-Stack Portfolio</title>
+    <!-- Google Fonts + Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0a;
+            color: #f0f0f0;
+            line-height: 1.5;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* digital matrix background animation - orange & green theme */
+        #digital-bg {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #0a0a0a, #000000);
+        }
+
+        canvas#matrix-canvas {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.8rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* glassmorphic cards with black/orange/green accents */
+        .glass-card {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 100, 0, 0.3);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 0, 0.08) inset;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            padding: 2rem 2.2rem;
+            margin-bottom: 2.5rem;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(14px);
+            border-bottom: 2px solid #ff6600;
+        }
+
+        .hero-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffaa33, #ff6600, #33ff33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #ffaa66;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-cyber {
+            background: #ff660020;
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+            font-size: 0.75rem;
+            display: inline-block;
+            border-left: 2px solid #ff6600;
+            color: #ffaa66;
+        }
+
+        .contact-chip {
+            background: rgba(255, 102, 0, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 102, 0, 0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .contact-chip i {
+            color: #ff8800;
+        }
+
+        .social-links a {
+            background: rgba(255, 102, 0, 0.2);
+            color: #ffcc88;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s;
+            font-size: 1.3rem;
+            border: 1px solid #ff660044;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: #ff6600;
+            color: #0a0a0a;
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px #ff8800;
+        }
+
+        .photo-area img {
+            border-radius: 50%;
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border: 2px solid #33ff33;
+            box-shadow: 0 0 12px #33ff3355;
+        }
+
+        .section-card {
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.2s;
+            background: rgba(8, 8, 8, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 1.8rem;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            border-color: #33ff33;
+        }
+
+        .section-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #ff6600;
+            padding-left: 1rem;
+        }
+
+        .section-title i {
+            color: #33ff33;
+            text-shadow: 0 0 3px #33ff33;
+        }
+
+        .timeline-grid .edu-item {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px dashed #ff8844;
+            padding: 0.9rem 0;
+        }
+
+        .edu-name {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #ffaa66;
+        }
+
+        .edu-period {
+            background: #33ff3320;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #88ff88;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .lang-card {
+            background: rgba(255, 102, 0, 0.08);
+            backdrop-filter: blur(4px);
+            border-radius: 1.2rem;
+            padding: 0.9rem;
+            text-align: center;
+            transition: 0.2s;
+            border: 1px solid #ff882230;
+        }
+
+        .lang-card:hover {
+            border-color: #33ff33;
+            background: rgba(51, 255, 51, 0.08);
+        }
+
+        .lang-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffcc99;
+        }
+
+        .fullstack-badge {
+            font-size: 0.7rem;
+            background: #ff660030;
+            border-radius: 30px;
+            padding: 0.2rem 0.5rem;
+            display: inline-block;
+            margin-top: 0.4rem;
+            color: #ffaa66;
+        }
+
+        .future-goal {
+            background: #1a1a1a;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            border-left: 3px solid #33ff33;
+        }
+
+        .cv-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #ff6600, #cc4400);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 15px #ff660077;
+            font-family: inherit;
+            text-decoration: none;
+        }
+        .cv-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px #ff8800;
+            background: linear-gradient(135deg, #ff7700, #dd5500);
+        }
+        .cv-note {
+            font-size: 0.75rem;
+            margin-top: 12px;
+            color: #88aa88;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-top: 1px solid #ff660044;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #aa9966;
+        }
+
+        @media (max-width: 700px) {
+            .hero-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 0px #ff6600; }
+            100% { text-shadow: 0 0 5px #33ff33; }
+        }
+        .glow-text {
+            animation: pulse-glow 2s infinite alternate;
+        }
+    </style>
+</head>
+<body>
+<div id="digital-bg"></div>
+<canvas id="matrix-canvas"></canvas>
+
+<div class="container">
+    <!-- Hero Section - Focus on Charles Niyomugabo -->
+    <div class="hero glass-card">
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1><i class="fas fa-code"></i> Niyomugabo Charles</h1>
+                <div class="tagline">
+                    <span class="badge-cyber"><i class="fas fa-terminal"></i> FULL-STACK ENGINEER</span>
+                    <span class="badge-cyber" style="margin-left: 8px;"><i class="fas fa-shield-haltered"></i> VISIONARY DEVELOPER</span>
+                </div>
+                <div class="bio" style="margin: 1rem 0 1.2rem 0; max-width: 600px;">
+                    From Garidieni to global code — mastering 12+ full-stack languages, building innovative solutions, 
+                    and shaping the future of technology in Rwanda and beyond.
+                </div>
+                <div class="contact-info" style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+                    <span class="contact-chip"><i class="fas fa-envelope"></i> niyomugabocharles11@gmail.com</span>
+                    <span class="contact-chip"><i class="fab fa-whatsapp"></i> +250 791 829 065</span>
+                </div>
+                <!-- SOCIAL LINKS with actual working URLs (inserted your accounts) -->
+                <div class="social-links" style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <a href="https://www.instagram.com/voix587" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/charles.voix" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/niyomugabo_charles" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
+                    <a href="https://wa.me/250791829065" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.linkedin.com/in/charles-niyomugabo" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/niyomugabocharles" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+                <!-- Handles text row -->
+                <div style="margin-top: 12px; font-size: 0.8rem; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <span><i class="fab fa-instagram"></i> voix587</span>
+                    <span><i class="fab fa-facebook"></i> charles voix</span>
+                    <span><i class="fab fa-twitter"></i> @niyomugabo_charles</span>
+                    <span><i class="fab fa-whatsapp"></i> +250791829065</span>
+                    <span><i class="fab fa-linkedin"></i> /in/charles-niyomugabo</span>
+                </div>
+            </div>
+            <div class="photo-area" style="text-align: center;">
+                <img src="C:\Users\zuingli\Downloads\my project1.png" alt="Charles Niyomugabo">
+                <div style="margin-top: 8px;"><i class="fas fa-qrcode"></i> <span class="glow-text">#Code. Create. Conquer.</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Journey (School path - completely focused on Charles) -->
+    <div class="section-card glass-card">
+        <div class="section-title">
+            <i class="fas fa-graduation-cap"></i>
+            <span>⚡ My Academic Odyssey</span>
+        </div>
+        <div class="timeline-grid">
+            <div class="edu-item">
+                <div><span class="edu-name"><i class="fas fa-seedling"></i> Garidieni (Early Years)</span></div>
+                <div class="edu-period">Foundation</div>
+                <div class="edu-desc">Roots of curiosity & discipline — first steps into learning.</div>
+            </div>
+            <div class="edu-item">
+                <div><span class="edu-name"><i class="fas fa-school"></i> Primary: NGENDA & EP. RANGO</span></div>
+                <div class="edu-period">Full Primary</div>
+                <div class="edu-desc">Completed all primary studies, built logic and numerical intuition.</div>
+            </div>
+            <div class="edu-item">
+                <div><span class="edu-name"><i class="fas fa-chalkboard-user"></i> O‑Level · OLVEL</span></div>
+                <div class="edu-period">Ordinary Level</div>
+                <div class="edu-desc">High performance in Maths & Sciences — first contact with programming concepts.</div>
+            </div>
+            <div class="edu-item">
+                <div><span class="edu-name"><i class="fas fa-university"></i> A‑Level · St. Francis Dasis College</span></div>
+                <div class="edu-period">Advanced (Part 1)</div>
+                <div class="edu-desc">Deepened software development skills and advanced ICT.</div>
+            </div>
+            <div class="edu-item">
+                <div><span class="edu-name"><i class="fas fa-award"></i> A‑Level Graduation · APPEC KAMONYI College</span></div>
+                <div class="edu-period">Graduated Secondary</div>
+                <div class="edu-desc">Finalized secondary education with distinction, ready for tech frontiers.</div>
+            </div>
+        </div>
+        <div class="future-goal">
+            <i class="fas fa-chart-line"></i> <strong>✨ Where I'm going:</strong> BSc in Software Engineering → MSc in Distributed Systems → Launching a tech startup that empowers African developers. Also mentoring young Rwandan talent & contributing to global open-source.
+        </div>
+    </div>
+
+    <!-- Full Stack Languages -->
+    <div class="section-card glass-card">
+        <div class="section-title">
+            <i class="fas fa-code-branch"></i>
+            <span>Full‑Stack Arsenal · Languages I Master</span>
+        </div>
+        <p style="margin-bottom: 1.2rem; color: #ddbb99;"><i class="fas fa-crown"></i> Each language: end‑to‑end development (DB, API, frontend, deployment). I am a full-stack developer in every single one.</p>
+        <div class="languages-grid">
+            <div class="lang-card"><i class="fab fa-js" style="font-size: 2rem; color: #f7df1e;"></i><div class="lang-name">JavaScript/TS</div><div class="fullstack-badge">Node · React · Nest</div></div>
+            <div class="lang-card"><i class="fab fa-python" style="font-size: 2rem; color: #3776ab;"></i><div class="lang-name">Python</div><div class="fullstack-badge">Django · FastAPI</div></div>
+            <div class="lang-card"><i class="fab fa-java" style="font-size: 2rem; color: #e76f00;"></i><div class="lang-name">Java</div><div class="fullstack-badge">Spring Boot · Microservices</div></div>
+            <div class="lang-card"><i class="fab fa-php" style="font-size: 2rem; color: #8892bf;"></i><div class="lang-name">PHP</div><div class="fullstack-badge">Laravel · Livewire</div></div>
+            <div class="lang-card"><i class="fas fa-database" style="font-size: 2rem; color: #00a0e0;"></i><div class="lang-name">SQL</div><div class="fullstack-badge">PostgreSQL · Prisma</div></div>
+            <div class="lang-card"><i class="fab fa-vuejs" style="font-size: 2rem; color: #42b883;"></i><div class="lang-name">Vue.js</div><div class="fullstack-badge">Pinia · Nuxt</div></div>
+            <div class="lang-card"><i class="fab fa-react" style="font-size: 2rem; color: #61dafb;"></i><div class="lang-name">React/Next</div><div class="fullstack-badge">Full‑stack SSR</div></div>
+            <div class="lang-card"><i class="fab fa-node-js" style="font-size: 2rem; color: #8cc84b;"></i><div class="lang-name">Node.js</div><div class="fullstack-badge">Express · GraphQL</div></div>
+            <div class="lang-card"><i class="fab fa-golang" style="font-size: 2rem; color: #00add8;"></i><div class="lang-name">Golang</div><div class="fullstack-badge">High-perf APIs</div></div>
+            <div class="lang-card"><i class="fas fa-code" style="font-size: 2rem; color: #ce9178;"></i><div class="lang-name">Rust</div><div class="fullstack-badge">WebAssembly · Tauri</div></div>
+            <div class="lang-card"><i class="fab fa-dart" style="font-size: 2rem; color: #00a9e0;"></i><div class="lang-name">Dart/Flutter</div><div class="fullstack-badge">Full‑stack mobile</div></div>
+            <div class="lang-card"><i class="fas fa-cloud" style="font-size: 2rem; color: #ff9a00;"></i><div class="lang-name">Kotlin</div><div class="fullstack-badge">Ktor · Android</div></div>
+        </div>
+    </div>
+
+    <!-- Languages spoken & Additional skills -->
+    <div class="section-card glass-card">
+        <div class="section-title">
+            <i class="fas fa-language"></i>
+            <span>Linguistic & Leadership Edge</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+            <div>
+                <h4><i class="fas fa-comments"></i> Human Languages</h4>
+                <ul style="margin-top: 0.5rem; list-style: none;">
+                    <li><i class="fas fa-check-circle" style="color:#33ff33;"></i> English (Fluent)</li>
+                    <li><i class="fas fa-check-circle" style="color:#33ff33;"></i> French (Advanced)</li>
+                    <li><i class="fas fa-check-circle" style="color:#33ff33;"></i> Kinyarwanda (Native)</li>
+                    <li><i class="fas fa-check-circle" style="color:#33ff33;"></i> Swahili (Intermediate)</li>
+                </ul>
+            </div>
+            <div>
+                <h4><i class="fas fa-medal"></i> Achievements & Recognition</h4>
+                <ul style="margin-top: 0.5rem; list-style: none;">
+                    <li>🏆 Top ICT Student - APPEC KAMONYI</li>
+                    <li>📜 Full-Stack Development Certification</li>
+                    <li>🔐 IoT & System Integration Expert</li>
+                    <li>🌟 Community Tech Mentor</li>
+                </ul>
+            </div>
+            <div>
+                <h4><i class="fas fa-tools"></i> DevOps & Tools</h4>
+                <ul style="margin-top: 0.5rem; list-style: none;">
+                    <li>🐳 Docker · Kubernetes · CI/CD</li>
+                    <li>☁️ AWS (EC2, RDS, Lambda)</li>
+                    <li>📡 Firebase · Supabase · Redis</li>
+                    <li>🛠️ Git/GitHub Actions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insert CV Section -->
+    <div class="section-card glass-card">
+        <div class="section-title">
+            <i class="fas fa-file-alt"></i>
+            <span>My Professional CV</span>
+        </div>
+        <div style="text-align: center;">
+            <p style="margin-bottom: 1.2rem;">Download or view my curriculum vitae — complete academic & professional background.</p>
+            <a href="#" id="downloadCvBtn" class="cv-button">
+                <i class="fas fa-download"></i> Download CV (PDF)
+            </a>
+            <p class="cv-note"><i class="fas fa-info-circle"></i> Click to download my detailed CV — includes full education, skills, languages, and references.</p>
+            <div style="margin-top: 1rem; background: #111111; border-radius: 1rem; padding: 1rem; border: 1px solid #ff660055;">
+                <i class="fas fa-file-pdf" style="color: #ff6600; font-size: 1.2rem;"></i> 
+                <strong>CV Preview:</strong> Niyomugabo Charles — Full-Stack Developer | Education: Garidieni → NGENDA & EP.RANGO → OLVEL → St. Francis Dasis → APPEC KAMONYI (A-Level Graduate). Expertise in 12+ languages, DevOps, and system architecture.
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact / final section with all social channels again -->
+    <div class="section-card glass-card">
+        <div class="section-title">
+            <i class="fas fa-plug"></i>
+            <span>Connect & Collaborate</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.8rem; text-align: center;">
+            <div><i class="fas fa-envelope fa-2x" style="color:#ff6600;"></i><br><strong>Email</strong><br>niyomugabocharles11@gmail.com</div>
+            <div><i class="fab fa-whatsapp fa-2x" style="color:#25D366;"></i><br><strong>WhatsApp</strong><br><a href="https://wa.me/250791829065" target="_blank" style="color:#ffaa66; text-decoration: none;">+250 791 829 065</a></div>
+            <div><i class="fab fa-instagram fa-2x" style="color:#ff00a6;"></i><br><strong>Instagram</strong><br><a href="https://www.instagram.com/voix587" target="_blank" style="color:#ffaa66; text-decoration: none;">@voix587</a></div>
+            <div><i class="fab fa-facebook fa-2x" style="color:#3b5998;"></i><br><strong>Facebook</strong><br><a href="https://www.facebook.com/charles.voix" target="_blank" style="color:#ffaa66; text-decoration: none;">charles voix</a></div>
+            <div><i class="fab fa-twitter fa-2x" style="color:#1DA1F2;"></i><br><strong>Twitter/X</strong><br><a href="https://twitter.com/niyomugabo_charles" target="_blank" style="color:#ffaa66; text-decoration: none;">@niyomugabo_c</a></div>
+            <div><i class="fab fa-linkedin fa-2x" style="color:#0077b5;"></i><br><strong>LinkedIn</strong><br><a href="https://www.linkedin.com/in/charles-niyomugabo" target="_blank" style="color:#ffaa66; text-decoration: none;">/in/charles-n</a></div>
+        </div>
+        <div style="margin-top: 1.6rem; text-align: center; font-size: 0.85rem;">
+            <i class="fas fa-map-pin"></i> Kigali, Rwanda · Open for freelance & innovative collaborations
+        </div>
+    </div>
+    <footer>
+        <p>⚡ Niyomugabo Charles — From Garidieni to global full‑stack excellence | Portfolio 2026</p>
+        <p><i class="fas fa-camera"></i> Photos & digital identity included | Built with <i class="fas fa-heart" style="color:#ff6600;"></i> and matrix focus</p>
+        <p><i class="fas fa-laptop-code"></i> “Code, create, and elevate the future”</p>
+    </footer>
+</div>
+
+<script>
+    (function() {
+        // DIGITAL MATRIX BACKGROUND - Lower animation (black background, orange/green drops)
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        const chars = "01コード開発フルスタック<>{}[]()&%#$@!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const fontSize = 16;
+        let columns = Math.floor(width / fontSize);
+        let drops = [];
+        
+        function initDrops() {
+            columns = Math.floor(width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100;
+            }
+        }
+        
+        function drawMatrix() {
+            if (!ctx) return;
+            ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+            ctx.fillRect(0, 0, width, height);
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                const colorChoice = Math.random() > 0.6 ? "#ff8800" : "#33ff33";
+                ctx.fillStyle = colorChoice + "aa";
+                ctx.font = `${fontSize}px 'Fira Code', monospace`;
+                if (y < height && y > 0) {
+                    ctx.fillText(text, x, y);
+                }
+                if (y > height && Math.random() < 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i] += 0.5;
+                if (drops[i] * fontSize > height && Math.random() < 0.02) {
+                    drops[i] = 0;
+                }
+            }
+            requestAnimationFrame(drawMatrix);
+        }
+        
+        initDrops();
+        drawMatrix();
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initDrops();
+        });
+        
+        // CV Download simulation
+        const downloadBtn = document.getElementById('downloadCvBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const cvContent = `===== CURRICULUM VITAE =====
+NAME: Niyomugabo Charles
+EMAIL: niyomugabocharles11@gmail.com
+PHONE: +250 791 829 065
+SOCIALS: 
+- Instagram: @voix587 (https://instagram.com/voix587)
+- Facebook: charles voix (https://facebook.com/charles.voix)
+- Twitter/X: @niyomugabo_charles (https://twitter.com/niyomugabo_charles)
+- WhatsApp: +250791829065
+- LinkedIn: /in/charles-niyomugabo
+
+--- EDUCATION ---
+- Early Years: Garidieni
+- Primary School: NGENDA & EP. RANGO
+- O-Level: OLVEL
+- A-Level (Year 1): St. Francis Dasis College
+- A-Level Graduation: APPEC KAMONYI College
+
+--- TECHNICAL SKILLS (Full-Stack in each) ---
+JavaScript/TypeScript, Python, Java, PHP, SQL, Vue.js, React, Node.js, Golang, Rust, Dart/Flutter, Kotlin.
+DevOps: Docker, Kubernetes, AWS, CI/CD, Git.
+
+--- LANGUAGES ---
+English (Fluent), French (Advanced), Kinyarwanda (Native), Swahili (Intermediate)
+
+--- GOALS & VISION ---
+BSc in Software Engineering -> MSc in Distributed Systems -> Tech Startup Founder & Mentor.
+
+--- ACHIEVEMENTS ---
+Top ICT Student at APPEC KAMONYI, Full-Stack certifications, Community mentor.
+
+This official CV belongs to Charles Niyomugabo.`;
+                const blob = new Blob([cvContent], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Niyomugabo_Charles_CV.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        }
+    })();
+</script>
+</body>
+</html>
